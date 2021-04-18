@@ -1,7 +1,10 @@
 
 import sys
+import os
 
-symbols = ["->", "{", "}", "(", ")",  "+=", "==", "=", "++", "+", "/", "--", "-", ";", "[", "]", ",", ">", "<"]
+replacements = {'->':'in', 'function':'def'}
+
+symbols = ["->", "{", "}", "(", ")",  "+=", "==", "=", "++", "+", "/", "--", "-", ";", "[", "]", ",", ">", "<", "'"]
 
 
 def removeKeys(code):
@@ -31,7 +34,12 @@ def convert(fileName, tokens):
     blockDepth = 0
 
 
-    for i in tokens:
+    for tok in tokens:
+
+        i = tok
+        if i in replacements:
+            i = replacements[i]
+            print(i)
 
         if(i == '{'):
             blockDepth += 1
@@ -45,6 +53,7 @@ def convert(fileName, tokens):
             code = code + "+= 1"
         elif(i == '--'):
             code = code + "-= 1"
+        
         
         else:
             code = code + i + " " 
@@ -103,6 +112,25 @@ def getStringLit(text):
 
     return text, ""
 
+def getCharLit(text):
+    token = ""
+    lit = False
+
+    for i in text:
+
+
+        if(i == "'"):
+            lit = not lit
+            token = token + "'"
+        elif(not lit):
+            return text[len(token):], token
+        else:
+            token = token + i
+        
+        
+
+    return text, ""
+
 def getNum(text):
     token = ""
     for i in text:
@@ -121,11 +149,32 @@ def getID(text):
             return text[len(token):], token
     return "", text
 
-def preprocess(line):
+def preprocess(file, line):
     ret = ""
     inc = '#include'
     if(line[:len(inc)] == inc):
-        f = open(line[len(inc):].strip())
+
+        newLine = line[len(inc):].strip()
+
+        if(newLine[0] == '<'):
+            return "import " + newLine[1:-1] + ";\n"
+
+        path = os.path.abspath(file)
+        path = path[:path.rindex('/')]
+        print(path)
+        toImp = newLine
+        
+        while(toImp[0] == '.'):
+            path = path[:path.rindex('/')]
+            print(path)
+            toImp = toImp[1:]
+
+        if(toImp[0] != '/'):
+            toImp = '/' + toImp
+
+        newFile = path + toImp + '.pyc'
+
+        f = open(newFile)
         for i in f:
             ret = ret + i + "\n"
     
@@ -143,7 +192,7 @@ def translate(file):
             continue
 
         if(i.strip()[0]=='#'):  
-            code = code + preprocess(i)
+            code = code + preprocess(file, i) + "\n"
 
         else:
             code = code + i
@@ -166,6 +215,10 @@ def translate(file):
         code = attempt[0]
         tokens.append(attempt[1])
 
+        attempt = getCharLit(code)
+        code = attempt[0]
+        tokens.append(attempt[1])
+
         attempt = getWhiteSpace(code)
         code = attempt[0]
         tokens.append(attempt[1])
@@ -175,13 +228,11 @@ def translate(file):
         if(attempt[1] != ""):
             tokens.append(attempt[1])
 
-        print(code)
 
     while('' in tokens):
         tokens.remove('')
 
 
-    print(tokens)
 
     convert(file[:file.rindex('.')], tokens)
 

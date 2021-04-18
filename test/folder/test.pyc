@@ -1,6 +1,7 @@
-#include imp.pyc
+#include ./imp
+#include <os>
 
-def main(){
+function main(){
 
     var = 15;
 
@@ -16,4 +17,6 @@ def main(){
     while(i < 10){
         i++;
     }
+
+    chungus('c');
 }

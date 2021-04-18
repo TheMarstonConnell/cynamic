@@ -1,3 +1,6 @@
-def chungus(){
-    print("chungus");
+function chungus(char){
+
+    if(char -> "chungus"){
+        print("chungus");
+    }
 }
