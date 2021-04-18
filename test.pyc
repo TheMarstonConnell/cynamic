@@ -1,0 +1,19 @@
+#include imp.pyc
+
+def main(){
+
+    var = 15;
+
+    print(10);
+    print(var);
+    print("Hello World!");
+
+    for (i in range(0, 10)){
+        print(i);
+    }
+    
+    i = 0;
+    while(i < 10){
+        i++;
+    }
+}
