@@ -2,9 +2,11 @@
 import sys
 import os
 
-replacements = {'->':'in', 'function':'def'}
+replacements = {'->':'in', 'function':'def', "!":"not", "&&":"and", "||":"or"}
 
-symbols = ["->", "{", "}", "(", ")",  "+=", "==", "=", "++", "+", "/", "--", "-", ";", "[", "]", ",", ">", "<", "'"]
+
+
+symbols = ["->", "{", "}", "(", ")",  "+=", "==", "=", "++", "+", "/", "--", "-", ";", "[", "]", ",", ">", "<", "'", ".", "!=", "!", "&&", "||"]
 
 
 def removeKeys(code):
@@ -39,7 +41,6 @@ def convert(fileName, tokens):
         i = tok
         if i in replacements:
             i = replacements[i]
-            print(i)
 
         if(i == '{'):
             blockDepth += 1
@@ -63,10 +64,12 @@ def convert(fileName, tokens):
 
     code = removeKeys(code)
 
-    f = open(fileName + ".py", "w")
+    f = open(fileName + ".cy", "w")
     f.write(code)
     f.close()
-    print(code)
+    
+
+    #os.system('python3 -OO -m py_compile ' + fileName + '.py')
 
 
 def getSymbol(text):
@@ -152,6 +155,8 @@ def getID(text):
 def preprocess(file, line):
     ret = ""
     inc = '#include'
+    define = '#define'
+
     if(line[:len(inc)] == inc):
 
         newLine = line[len(inc):].strip()
@@ -161,12 +166,10 @@ def preprocess(file, line):
 
         path = os.path.abspath(file)
         path = path[:path.rindex('/')]
-        print(path)
         toImp = newLine
         
         while(toImp[0] == '.'):
             path = path[:path.rindex('/')]
-            print(path)
             toImp = toImp[1:]
 
         if(toImp[0] != '/'):
@@ -177,7 +180,11 @@ def preprocess(file, line):
         f = open(newFile)
         for i in f:
             ret = ret + i + "\n"
-    
+    elif(line[:len(define)] == define):
+        newLine = line[len(inc):].strip()
+        token = newLine[:newLine.find(' ')]
+        definer = newLine[newLine.find(' ') + 1:].strip()
+        replacements[token] = definer
     return ret
 
 def translate(file):
@@ -199,9 +206,10 @@ def translate(file):
 
     tokens = []
 
-
+    
 
     while(len(code) > 0):
+        before = code
 
         attempt = getID(code)
         code = attempt[0]
@@ -228,7 +236,11 @@ def translate(file):
         if(attempt[1] != ""):
             tokens.append(attempt[1])
 
-
+        if(before == code):
+            error = "Failed compile at: "
+            print(error + code[:20].replace('\n', ' '))
+            print("~"*len(error) + '^')
+            return
     while('' in tokens):
         tokens.remove('')
 

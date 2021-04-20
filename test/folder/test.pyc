@@ -1,11 +1,13 @@
 #include ./imp
 #include <os>
 
+#define MEGA 16.56
+
 function main(){
 
-    var = 15;
+    var = MEGA;
 
-    print(10);
+    print(10 == 10 && (15 == 10 || 5 > 1));
     print(var);
     print("Hello World!");
 

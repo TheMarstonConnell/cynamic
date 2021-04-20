@@ -5,8 +5,8 @@ def chungus ( char ):
     
 import os 
 def main ( ):
-    var = 15 
-    print ( 10 ) 
+    var = 16.56 
+    print ( 10 == 10 and ( 15 == 10 or 5 > 1 ) ) 
     print ( var ) 
     print ( "Hello World!" ) 
     for  i in range ( 0 , 10  ):
@@ -16,7 +16,7 @@ def main ( ):
     while ( i < 10 ):
         i += 1
         
-    chungus ( 'd' ) 
+    chungus ( 'c' ) 
     
 
 if(__name__ == "__main__"):
