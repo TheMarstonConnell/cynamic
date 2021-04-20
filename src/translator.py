@@ -253,7 +253,10 @@ def translate(file):
 
 def main():
 
-    translate(sys.argv[1]);
+    if(len(sys.argv) > 1):
+    	translate(sys.argv[1]);
+    else:
+        print("Cannot run without file specified.")
 
 
 
