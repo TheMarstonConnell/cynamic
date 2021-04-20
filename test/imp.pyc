@@ -1,6 +1,6 @@
-function chungus(char){
+function hello(char){
 
-    if(char -> "chungus"){
-        print("chungus");
+    if(char -> "hello world"){
+        print("Hello World!");
     }
 }

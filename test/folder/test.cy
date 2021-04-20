@@ -1,6 +1,6 @@
-def chungus ( char ):
-    if ( char in "chungus" ):
-        print ( "chungus" ) 
+def hello ( char ):
+    if ( char in "hello world" ):
+        print ( "Hello World!" ) 
         
     
 import os 
@@ -16,7 +16,7 @@ def main ( ):
     while ( i < 10 ):
         i += 1
         
-    chungus ( 'c' ) 
+    hello ( 'w' ) 
     
 
 if(__name__ == "__main__"):

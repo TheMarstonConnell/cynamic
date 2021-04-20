@@ -20,5 +20,5 @@ function main(){
         i++;
     }
 
-    chungus('c');
+    hello('w');
 }
