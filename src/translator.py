@@ -30,8 +30,9 @@ def removeKeys(code):
 
 
 
-def convert(fileName, tokens):
+def convert(fileName, tokens, location):
     code = ""
+
 
     blockDepth = 0
 
@@ -63,6 +64,13 @@ def convert(fileName, tokens):
     code = code + '\nif(__name__ == "__main__"):\n    main()'
 
     code = removeKeys(code)
+
+    preface = ""
+    p = open(location + "\\system.py")
+    for i in p:
+        preface = preface + i + "\n"
+
+    code = preface + "\n" + code
 
     f = open(fileName + ".cy", "w")
     f.write(code)
@@ -187,11 +195,11 @@ def preprocess(file, line):
         replacements[token] = definer
     return ret
 
-def translate(file):
+def translate(file, location):
 
 
 
-    code = ""
+    code = "" 
 
     f = open(file)
     for i in f:
@@ -237,6 +245,7 @@ def translate(file):
             tokens.append(attempt[1])
 
         if(before == code):
+            print(tokens)
             error = "Failed compile at: "
             print(error + code[:20].replace('\n', ' '))
             print("~"*len(error) + '^')
@@ -246,15 +255,19 @@ def translate(file):
 
 
 
-    convert(file[:file.rindex('.')], tokens)
+    convert(file[:file.rindex('.')], tokens, location)
 
 
     
 
 def main():
 
+    location = os.path.dirname(os.path.abspath(__file__))
+    
+
+
     if(len(sys.argv) > 1):
-    	translate(sys.argv[1]);
+    	translate(sys.argv[1], location);
     else:
         print("Cannot run without file specified.")
 
